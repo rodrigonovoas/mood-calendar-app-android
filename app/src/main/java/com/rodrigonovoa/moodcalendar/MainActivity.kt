@@ -4,18 +4,46 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.LayoutManager
-import java.util.Calendar
+import com.rodrigonovoa.moodcalendar.data.CalendarMood
+import com.rodrigonovoa.moodcalendar.utils.CalendarUtils
 
 class MainActivity : AppCompatActivity() {
+
+    private val ROWS_COLUMNS_WEEK = 7
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val moods = listOf<String>("Happy", "Sad", "Happy", "Sad", "Happy", "Sad", "Happy", "Sad")
-        val adapter = CalendarAdapter(moods)
+        val adapter = CalendarAdapter(getMoodsInCalendarFormat(moodExamples()))
         val rcMoods = findViewById<RecyclerView>(R.id.rc_moods)
-        rcMoods.layoutManager = GridLayoutManager(this@MainActivity, 7)
+        rcMoods.layoutManager = GridLayoutManager(this@MainActivity, ROWS_COLUMNS_WEEK)
         rcMoods.adapter = adapter
     }
+
+    private fun getMoodsInCalendarFormat(userMoods: List<CalendarMood>): List<String> {
+        val daysOfTheMonth = CalendarUtils.getCurrentMonthDays()
+        var moods = mutableListOf<String>()
+
+        for (day in 1..daysOfTheMonth) {
+            val dayMood = userMoods.filter { s -> s.day == day }.singleOrNull()
+
+            if (dayMood != null) {
+                moods.add(dayMood.mood)
+            } else {
+                moods.add("")
+            }
+        }
+
+        return moods.toList()
+    }
+
+    private fun moodExamples(): List<CalendarMood> {
+        return listOf<CalendarMood>(
+            CalendarMood(3, "Happy"),
+            CalendarMood(5, "Neutral"),
+            CalendarMood(12, "Happy"),
+            CalendarMood(24, "S. Happy"))
+    }
+
+
 }
