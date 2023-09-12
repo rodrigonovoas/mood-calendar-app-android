@@ -5,10 +5,10 @@ import com.rodrigonovoa.moodcalendar.database.data.MoodEntity
 
 @Dao
 interface MoodDAO {
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertMood(mood: MoodEntity): Long
 
-    @Query("select * from MoodEntity")
+    @Query("select * from mood")
     fun getAllMoods(): List<MoodEntity>
 
     @Update

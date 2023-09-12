@@ -11,7 +11,7 @@ import androidx.room.*
             onDelete = ForeignKey.CASCADE)
     ))
 data class MoodDayEntity(
-    @PrimaryKey val id: Int,
+    @PrimaryKey(autoGenerate = true) val id: Int?,
     @ColumnInfo val month: Int,
     @ColumnInfo val day: Int,
     @ColumnInfo val moodId: Int

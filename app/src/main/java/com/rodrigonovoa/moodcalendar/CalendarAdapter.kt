@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 class CalendarAdapter(private val moodList: List<String>) : RecyclerView.Adapter<CalendarAdapter.ViewHolder>()
 {
 
-    var onMoodClick: ((String) -> Unit)? = null
+    var onMoodClick: ((Int) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -22,6 +22,7 @@ class CalendarAdapter(private val moodList: List<String>) : RecyclerView.Adapter
         val item = moodList[position]
         val context = holder.ivMood.context
         holder.tvMood.text = item
+        holder.ivMood.setOnClickListener { onMoodClick?.invoke(position + 1) }
     }
 
     override fun getItemCount(): Int {

@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.rodrigonovoa.moodcalendar.data.CalendarMood
 import com.rodrigonovoa.moodcalendar.database.MoodDatabase
+import com.rodrigonovoa.moodcalendar.database.data.MoodDayEntity
 import com.rodrigonovoa.moodcalendar.utils.CalendarUtils
 import com.rodrigonovoa.moodcalendar.utils.MainActivityViewModel
 
@@ -19,12 +20,37 @@ class MainActivity : AppCompatActivity() {
 
         val database = MoodDatabase.getInstance(this@MainActivity)
         viewModel = MainActivityViewModel(database)
-        val adapter = CalendarAdapter(getMoodsInCalendarFormat(moodExamples()))
+
+        observers()
+    }
+
+    private fun observers() {
+        viewModel.moods.observe(this) { moods ->
+            setCalendarRecyclerView(moods)
+        }
+    }
+
+    private fun setCalendarRecyclerView(moods: List<MoodDayEntity>) {
+        val moods = mapMoodDayEntity(moods)
+        val adapter = CalendarAdapter(getMoodsInCalendarFormat(moods))
         val rcMoods = findViewById<RecyclerView>(R.id.rc_moods)
         rcMoods.layoutManager = GridLayoutManager(this@MainActivity, ROWS_COLUMNS_WEEK)
         rcMoods.adapter = adapter
 
-        viewModel.insertMood()
+        adapter.onMoodClick = {
+            val CURRENT_MONTH = 9
+            viewModel.insertMoodDayEntity(CURRENT_MONTH, it)
+        }
+    }
+
+    private fun mapMoodDayEntity(moods: List<MoodDayEntity>): List<CalendarMood> {
+        var calendarMoodList = mutableListOf<CalendarMood>()
+
+        for (mood in moods) {
+            calendarMoodList.add(CalendarMood(mood.day, mood.moodId.toString()))
+        }
+
+        return calendarMoodList
     }
 
     private fun getMoodsInCalendarFormat(userMoods: List<CalendarMood>): List<String> {

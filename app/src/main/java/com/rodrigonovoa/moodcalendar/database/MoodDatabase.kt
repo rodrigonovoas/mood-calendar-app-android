@@ -9,7 +9,7 @@ import com.rodrigonovoa.moodcalendar.database.dao.MoodDayDAO
 import com.rodrigonovoa.moodcalendar.database.data.MoodDayEntity
 import com.rodrigonovoa.moodcalendar.database.data.MoodEntity
 
-@Database(entities = [MoodDayEntity::class, MoodEntity::class], version = 1)
+@Database(entities = [MoodDayEntity::class, MoodEntity::class], version = 2)
 abstract class MoodDatabase : RoomDatabase() {
 
     abstract fun moodDao(): MoodDAO
