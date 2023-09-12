@@ -5,19 +5,26 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.rodrigonovoa.moodcalendar.data.CalendarMood
+import com.rodrigonovoa.moodcalendar.database.MoodDatabase
 import com.rodrigonovoa.moodcalendar.utils.CalendarUtils
+import com.rodrigonovoa.moodcalendar.utils.MainActivityViewModel
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var viewModel: MainActivityViewModel
     private val ROWS_COLUMNS_WEEK = 7
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val database = MoodDatabase.getInstance(this@MainActivity)
+        viewModel = MainActivityViewModel(database)
         val adapter = CalendarAdapter(getMoodsInCalendarFormat(moodExamples()))
         val rcMoods = findViewById<RecyclerView>(R.id.rc_moods)
         rcMoods.layoutManager = GridLayoutManager(this@MainActivity, ROWS_COLUMNS_WEEK)
         rcMoods.adapter = adapter
+
+        viewModel.insertMood()
     }
 
     private fun getMoodsInCalendarFormat(userMoods: List<CalendarMood>): List<String> {
