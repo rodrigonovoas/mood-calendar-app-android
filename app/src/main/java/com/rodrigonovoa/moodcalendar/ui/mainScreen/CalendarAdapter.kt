@@ -1,4 +1,4 @@
-package com.rodrigonovoa.moodcalendar
+package com.rodrigonovoa.moodcalendar.ui.mainScreen
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.rodrigonovoa.moodcalendar.R
 
 class CalendarAdapter(private val moodList: List<String>) : RecyclerView.Adapter<CalendarAdapter.ViewHolder>()
 {

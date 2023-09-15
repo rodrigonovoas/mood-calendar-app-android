@@ -5,15 +5,15 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.rodrigonovoa.moodcalendar.database.dao.MoodDAO
-import com.rodrigonovoa.moodcalendar.database.dao.MoodDayDAO
-import com.rodrigonovoa.moodcalendar.database.data.MoodDayEntity
+import com.rodrigonovoa.moodcalendar.database.dao.DayDAO
+import com.rodrigonovoa.moodcalendar.database.data.DayEntity
 import com.rodrigonovoa.moodcalendar.database.data.MoodEntity
 
-@Database(entities = [MoodDayEntity::class, MoodEntity::class], version = 2)
+@Database(entities = [DayEntity::class, MoodEntity::class], version = 3)
 abstract class MoodDatabase : RoomDatabase() {
 
     abstract fun moodDao(): MoodDAO
-    abstract fun moodDayDao(): MoodDayDAO
+    abstract fun moodDayDao(): DayDAO
 
     companion object {
         private var instance: MoodDatabase? = null
