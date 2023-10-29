@@ -12,7 +12,7 @@ interface DayDAO {
     @Query("select * from Day")
     fun getAllMoodDays(): List<DayEntity>
 
-    @Query("SELECT Day.dayId AS id, Mood.name AS mood, Day.day FROM Mood INNER JOIN Day ON Mood.id = Day.moodId WHERE Day.month = :month")
+    @Query("SELECT Day.dayId AS id, Mood.id AS moodId, Day.day FROM Mood INNER JOIN Day ON Mood.id = Day.moodId WHERE Day.month = :month")
     fun getMoodWithDayByMonth(month: Int): List<MoodWithDayEntity>
 
     @Update

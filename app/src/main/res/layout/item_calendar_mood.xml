@@ -3,20 +3,21 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:gravity="center"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:layout_marginTop="12dp">
 
     <TextView
         android:id="@+id/tv_mood"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="8dp"
-        android:text="test" />
+        android:textSize="12dp"
+        android:text="" />
 
     <ImageView
         android:id="@+id/imv_mood"
         android:layout_width="25dp"
         android:layout_height="25dp"
-        android:layout_marginTop="10dp"
-        android:src="@drawable/ic_happy_mood"/>
+        android:layout_marginTop="4dp"
+        android:src="@drawable/ic_unknown"/>
 
 </LinearLayout>

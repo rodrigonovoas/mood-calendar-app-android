@@ -8,21 +8,43 @@ import com.rodrigonovoa.moodcalendar.R
 import com.rodrigonovoa.moodcalendar.data.CalendarMood
 import com.rodrigonovoa.moodcalendar.database.MoodDatabase
 import com.rodrigonovoa.moodcalendar.database.data.MoodWithDayEntity
+import com.rodrigonovoa.moodcalendar.databinding.ActivityMainBinding
 import com.rodrigonovoa.moodcalendar.utils.CalendarUtils
+import java.text.DateFormatSymbols
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityMainBinding
     private lateinit var viewModel: MainActivityViewModel
     private val COLUMNS_NUMBER = 7
+    private var currentMonth = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         val database = MoodDatabase.getInstance(this@MainActivity)
 
         viewModel = MainActivityViewModel(database)
 
         observers()
+        getCurrentMonth()
+        setViewListeners()
+    }
+
+    private fun setViewListeners() {
+        binding.imvPreviousMonth.setOnClickListener {
+            currentMonth = currentMonth - 1
+            binding.tvMonth.text =
+                DateFormatSymbols.getInstance(Locale.ENGLISH).months.get(currentMonth - 1)
+        }
+        binding.imvNextMonth.setOnClickListener {
+            currentMonth = currentMonth + 1
+            binding.tvMonth.text =
+                DateFormatSymbols.getInstance(Locale.ENGLISH).months.get(currentMonth - 1)
+        }
     }
 
     private fun observers() {
@@ -40,22 +62,28 @@ class MainActivity : AppCompatActivity() {
         rcMoods.adapter = adapter
 
         adapter.onMoodClick = {
-            val CURRENT_MONTH = 9
-            viewModel.insertMoodDayEntity(CURRENT_MONTH, it)
+            viewModel.insertMoodDayEntity(currentMonth, it)
         }
     }
 
     private fun mapToMoodDayEntity(moods: List<MoodWithDayEntity>): List<CalendarMood> {
-        return moods.map { CalendarMood(it.day, it.mood) }
+        return moods.map { CalendarMood(it.day, it.moodId) }
     }
 
-    private fun getMoodsInCalendarFormat(userMoods: List<CalendarMood>): List<String> {
+    private fun getMoodsInCalendarFormat(userMoods: List<CalendarMood>): List<Int> {
         val daysOfTheMonth = CalendarUtils.getCurrentMonthDays()
 
         val userMoodsMapped = (1..daysOfTheMonth).map { day ->
-            userMoods.find { s -> s.day == day }?.mood ?: ""
+            userMoods.find { s -> s.day == day }?.moodId ?: 0
         }
 
         return userMoodsMapped
+    }
+
+    private fun getCurrentMonth() {
+        // from Calendar, month 0 is January
+        currentMonth = Calendar.getInstance().get(Calendar.MONTH) + 1
+        binding.tvMonth.text =
+            DateFormatSymbols.getInstance(Locale.ENGLISH).months.get(currentMonth - 1)
     }
 }

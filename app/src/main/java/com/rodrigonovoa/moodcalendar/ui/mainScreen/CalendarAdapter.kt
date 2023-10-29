@@ -7,8 +7,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.rodrigonovoa.moodcalendar.R
+import com.rodrigonovoa.moodcalendar.data.CalendarMood
 
-class CalendarAdapter(private val moodList: List<String>) : RecyclerView.Adapter<CalendarAdapter.ViewHolder>()
+class CalendarAdapter(private val moodList: List<Int>) : RecyclerView.Adapter<CalendarAdapter.ViewHolder>()
 {
 
     var onMoodClick: ((Int) -> Unit)? = null
@@ -22,7 +23,10 @@ class CalendarAdapter(private val moodList: List<String>) : RecyclerView.Adapter
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = moodList[position]
         val context = holder.ivMood.context
-        holder.tvMood.text = item
+
+        if (item > 0) { holder.ivMood.setImageDrawable(context.getDrawable(R.drawable.ic_happy_mood)) }
+
+        holder.tvMood.text = (position + 1).toString()
         holder.ivMood.setOnClickListener { onMoodClick?.invoke(position + 1) }
     }
 
