@@ -26,12 +26,16 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val database = MoodDatabase.getInstance(this@MainActivity)
-
         viewModel = MainActivityViewModel(database)
 
         observers()
         getCurrentMonth()
         setViewListeners()
+        getCurrentMonthMoods()
+    }
+
+    private fun getCurrentMonthMoods() {
+        viewModel.getMoodDays(currentMonth)
     }
 
     private fun setViewListeners() {
@@ -39,11 +43,13 @@ class MainActivity : AppCompatActivity() {
             currentMonth = currentMonth - 1
             binding.tvMonth.text =
                 DateFormatSymbols.getInstance(Locale.ENGLISH).months.get(currentMonth - 1)
+            viewModel.getMoodDays(currentMonth)
         }
         binding.imvNextMonth.setOnClickListener {
             currentMonth = currentMonth + 1
             binding.tvMonth.text =
                 DateFormatSymbols.getInstance(Locale.ENGLISH).months.get(currentMonth - 1)
+            viewModel.getMoodDays(currentMonth)
         }
     }
 

@@ -15,11 +15,7 @@ class MainActivityViewModel(val database: MoodDatabase): ViewModel() {
     private val _moods = MutableLiveData<List<MoodWithDayEntity>>().apply { postValue(listOf()) }
     val moods: LiveData<List<MoodWithDayEntity>> get() = _moods
 
-    init {
-        getMoodDays(9)
-    }
-
-    private fun getMoodDays(month: Int) {
+    fun getMoodDays(month: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             val moods = database.moodDayDao().getMoodWithDayByMonth(month)
             _moods.postValue(moods)
