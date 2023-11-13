@@ -1,6 +1,9 @@
 package com.rodrigonovoa.moodcalendar.ui.mainScreen
 
 import android.os.Bundle
+import android.widget.Button
+import android.widget.ImageView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -34,6 +37,39 @@ class MainActivity : AppCompatActivity() {
         getCurrentMonthMoods()
     }
 
+    private fun openMoodPopup(day: Int) {
+        val builder = AlertDialog.Builder(this)
+        val inflater = layoutInflater
+        val dialogLayout = inflater.inflate(R.layout.add_mood_popup, null)
+        val buttonClose = dialogLayout.findViewById<Button>(R.id.buttonClose)
+
+        val imvHappy = dialogLayout.findViewById<ImageView>(R.id.imv_happy)
+        val imvNeutral = dialogLayout.findViewById<ImageView>(R.id.imv_neutral)
+        val imvSad = dialogLayout.findViewById<ImageView>(R.id.imv_sad)
+
+        builder.setView(dialogLayout)
+        val customDialog = builder.create()
+
+        imvHappy.setOnClickListener {
+            viewModel.insertMoodDayEntity(currentMonth, day, 1)
+            customDialog.dismiss()
+        }
+
+        imvNeutral.setOnClickListener {
+            viewModel.insertMoodDayEntity(currentMonth, day, 2)
+            customDialog.dismiss()
+        }
+
+        imvSad.setOnClickListener {
+            viewModel.insertMoodDayEntity(currentMonth, day,3)
+            customDialog.dismiss()
+        }
+
+        buttonClose.setOnClickListener { customDialog.dismiss() }
+
+        customDialog.show()
+    }
+
     private fun getCurrentMonthMoods() {
         viewModel.getMoodDays(currentMonth)
     }
@@ -57,6 +93,10 @@ class MainActivity : AppCompatActivity() {
         viewModel.moods.observe(this) { moods ->
             setCalendarRecyclerView(moods)
         }
+
+        viewModel.moodInserted.observe(this) { inserted ->
+            if (inserted) { viewModel.getMoodDays(currentMonth) }
+        }
     }
 
     private fun setCalendarRecyclerView(moods: List<MoodWithDayEntity>) {
@@ -68,7 +108,7 @@ class MainActivity : AppCompatActivity() {
         rcMoods.adapter = adapter
 
         adapter.onMoodClick = {
-            viewModel.insertMoodDayEntity(currentMonth, it)
+            openMoodPopup(it)
         }
     }
 

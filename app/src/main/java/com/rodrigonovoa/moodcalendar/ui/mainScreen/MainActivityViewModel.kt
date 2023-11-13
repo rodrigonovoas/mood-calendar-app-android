@@ -15,6 +15,9 @@ class MainActivityViewModel(val database: MoodDatabase): ViewModel() {
     private val _moods = MutableLiveData<List<MoodWithDayEntity>>().apply { postValue(listOf()) }
     val moods: LiveData<List<MoodWithDayEntity>> get() = _moods
 
+    private val _moodInserted = MutableLiveData<Boolean>().apply { postValue(false) }
+    val moodInserted: LiveData<Boolean> get() = _moodInserted
+
     fun getMoodDays(month: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             val moods = database.moodDayDao().getMoodWithDayByMonth(month)
@@ -22,9 +25,10 @@ class MainActivityViewModel(val database: MoodDatabase): ViewModel() {
         }
     }
 
-    fun insertMoodDayEntity(month: Int, day: Int) {
+    fun insertMoodDayEntity(month: Int, day: Int, moodId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            database.moodDayDao().insertMoodDay(DayEntity(null, month, day, 1))
+            val inserted = database.moodDayDao().insertMoodDay(DayEntity(null, month, day, moodId))
+            if (inserted > 0L) { _moodInserted.postValue(true) }
         }
     }
 
