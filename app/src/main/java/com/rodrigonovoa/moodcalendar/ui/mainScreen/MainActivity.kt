@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.rodrigonovoa.moodcalendar.R
-import com.rodrigonovoa.moodcalendar.data.CalendarMood
 import com.rodrigonovoa.moodcalendar.database.MoodDatabase
 import com.rodrigonovoa.moodcalendar.database.data.MoodWithDayEntity
 import com.rodrigonovoa.moodcalendar.databinding.ActivityMainBinding
@@ -66,11 +65,14 @@ class MainActivity : AppCompatActivity(), MoodPopupManagerInterface {
         viewModel.moodInserted.observe(this) { inserted ->
             if (inserted) { viewModel.getMoodDays(currentMonth) }
         }
+
+        viewModel.moodDeleted.observe(this) { deleted ->
+            if (deleted) { viewModel.getMoodDays(currentMonth) }
+        }
     }
 
     private fun setCalendarRecyclerView(moods: List<MoodWithDayEntity>) {
-        val moods = mapToMoodDayEntity(moods)
-        val adapter = CalendarAdapter(getMoodsInCalendarFormat(moods))
+        val adapter = CalendarAdapter(mapMoodsPerDay(moods))
         val rcMoods = findViewById<RecyclerView>(R.id.rc_moods)
 
         rcMoods.layoutManager = GridLayoutManager(this@MainActivity, COLUMNS_NUMBER)
@@ -81,15 +83,12 @@ class MainActivity : AppCompatActivity(), MoodPopupManagerInterface {
         }
     }
 
-    private fun mapToMoodDayEntity(moods: List<MoodWithDayEntity>): List<CalendarMood> {
-        return moods.map { CalendarMood(it.day, it.moodId) }
-    }
 
-    private fun getMoodsInCalendarFormat(userMoods: List<CalendarMood>): List<Int> {
+    private fun mapMoodsPerDay(userMoods: List<MoodWithDayEntity>): List<MoodWithDayEntity> {
         val daysOfTheMonth = CalendarUtils.getCurrentMonthDays(currentMonth)
 
         val userMoodsMapped = (1..daysOfTheMonth).map { day ->
-            userMoods.find { s -> s.day == day }?.moodId ?: 0
+            userMoods.find { s -> s.day == day } ?: MoodWithDayEntity(0,0,day)
         }
 
         return userMoodsMapped
@@ -104,5 +103,10 @@ class MainActivity : AppCompatActivity(), MoodPopupManagerInterface {
 
     override fun insertMood(day: Int, moodType: Int) {
         viewModel.insertMoodDayEntity(currentMonth, day, moodType)
+    }
+
+    // id, month, day, mooid
+    override fun deleteMood(id: Int) {
+        viewModel.deleteMoodDayEntity(id)
     }
 }

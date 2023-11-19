@@ -18,6 +18,9 @@ class MainActivityViewModel(val database: MoodDatabase): ViewModel() {
     private val _moodInserted = MutableLiveData<Boolean>().apply { postValue(false) }
     val moodInserted: LiveData<Boolean> get() = _moodInserted
 
+    private val _moodDeleted = MutableLiveData<Boolean>().apply { postValue(false) }
+    val moodDeleted: LiveData<Boolean> get() = _moodDeleted
+
     fun getMoodDays(month: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             val moods = database.moodDayDao().getMoodWithDayByMonth(month)
@@ -29,6 +32,13 @@ class MainActivityViewModel(val database: MoodDatabase): ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             val inserted = database.moodDayDao().insertMoodDay(DayEntity(null, month, day, moodId))
             if (inserted > 0L) { _moodInserted.postValue(true) }
+        }
+    }
+
+    fun deleteMoodDayEntity(id: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val deleted = database.moodDayDao().deleteMoodDayById(id)
+            if (deleted == 1) { _moodDeleted.postValue(true) }
         }
     }
 

@@ -7,11 +7,12 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.rodrigonovoa.moodcalendar.R
+import com.rodrigonovoa.moodcalendar.database.data.MoodWithDayEntity
 
-class CalendarAdapter(private val moodList: List<Int>) : RecyclerView.Adapter<CalendarAdapter.ViewHolder>()
+class CalendarAdapter(private val moodList: List<MoodWithDayEntity>) : RecyclerView.Adapter<CalendarAdapter.ViewHolder>()
 {
 
-    var onMoodClick: ((Int) -> Unit)? = null
+    var onMoodClick: ((MoodWithDayEntity) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -23,7 +24,7 @@ class CalendarAdapter(private val moodList: List<Int>) : RecyclerView.Adapter<Ca
         val item = moodList[position]
         val context = holder.ivMood.context
 
-        when (item) {
+        when (item.moodId) {
             1 -> {
                 holder.ivMood.setImageDrawable(context.getDrawable(R.drawable.ic_happy_mood))
             }
@@ -39,7 +40,7 @@ class CalendarAdapter(private val moodList: List<Int>) : RecyclerView.Adapter<Ca
         }
 
         holder.tvMood.text = (position + 1).toString()
-        holder.ivMood.setOnClickListener { onMoodClick?.invoke(position + 1) }
+        holder.ivMood.setOnClickListener { onMoodClick?.invoke(item) }
     }
 
     override fun getItemCount(): Int {
