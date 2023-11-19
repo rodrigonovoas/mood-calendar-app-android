@@ -13,6 +13,7 @@ class MoodPopupManager(private val context: Context, private val moodManager: Mo
         val builder = AlertDialog.Builder(context)
         val inflater = LayoutInflater.from(context)
         val dialogLayout = inflater.inflate(R.layout.add_mood_popup, null)
+
         val buttonClose = dialogLayout.findViewById<Button>(R.id.buttonClose)
 
         val imvHappy = dialogLayout.findViewById<ImageView>(R.id.imv_happy)
@@ -39,6 +40,7 @@ class MoodPopupManager(private val context: Context, private val moodManager: Mo
 
         buttonClose.setOnClickListener { customDialog.dismiss() }
 
+        customDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
         customDialog.show()
     }
 

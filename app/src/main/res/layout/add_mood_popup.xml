@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/popup_bg"
     android:orientation="vertical"
     android:padding="16dp">
 
@@ -33,12 +34,13 @@
             android:src="@drawable/ic_sad_mood" />
     </LinearLayout>
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/buttonClose"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10sp"
+        android:layout_marginTop="32dp"
         android:layout_gravity="end"
-        android:text="Close" />
+        android:text="Close"
+        android:background="@drawable/button_bg" />
 
 </LinearLayout>

@@ -43,19 +43,19 @@ class MainActivity : AppCompatActivity(), MoodPopupManagerInterface {
     }
 
     private fun setViewListeners() {
-        binding.imvPreviousMonth.setOnClickListener {
-            currentMonth = currentMonth - 1
-            binding.tvMonth.text =
-                DateFormatSymbols.getInstance(Locale.ENGLISH).months.get(currentMonth - 1)
-            viewModel.getMoodDays(currentMonth)
-        }
-        binding.imvNextMonth.setOnClickListener {
-            currentMonth = currentMonth + 1
-            if (currentMonth == 13) { currentMonth = 1 }
-            binding.tvMonth.text =
-                DateFormatSymbols.getInstance(Locale.ENGLISH).months.get(currentMonth - 1)
-            viewModel.getMoodDays(currentMonth)
-        }
+        binding.imvPreviousMonth.setOnClickListener { updateMonth(-1) }
+        binding.imvNextMonth.setOnClickListener { updateMonth(1) }
+    }
+
+    private fun updateMonth(change: Int) {
+        currentMonth += change
+        if (currentMonth == 0) { currentMonth = 12 }
+        else if (currentMonth == 13) { currentMonth = 1 }
+
+        binding.tvMonth.text =
+            DateFormatSymbols.getInstance(Locale.ENGLISH).months[currentMonth - 1]
+
+        viewModel.getMoodDays(currentMonth)
     }
 
     private fun observers() {
@@ -86,7 +86,7 @@ class MainActivity : AppCompatActivity(), MoodPopupManagerInterface {
     }
 
     private fun getMoodsInCalendarFormat(userMoods: List<CalendarMood>): List<Int> {
-        val daysOfTheMonth = CalendarUtils.getCurrentMonthDays()
+        val daysOfTheMonth = CalendarUtils.getCurrentMonthDays(currentMonth)
 
         val userMoodsMapped = (1..daysOfTheMonth).map { day ->
             userMoods.find { s -> s.day == day }?.moodId ?: 0
